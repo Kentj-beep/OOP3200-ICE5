@@ -1,13 +1,19 @@
 #pragma once
 #ifndef __VECTOR3D__
 #define __VECTOR3D__
+
 #include <string>
+#include <iostream>
+#include "Vector2D.h"
+#include <assert.h>
 
 template <class T>
 class Vector3D
 {
 public:
-	Vector3D(const T x = static_cast<T>(0.0), const T y = static_cast < T>(0.0), const T z = static_cast < T>(0.0f));
+	Vector3D(const T x = static_cast<T>(0.0), const T y = static_cast<T>(0.0), const T z = static_cast<T>(0.0));
+	Vector3D(const std::string& x, const std::string& y, const std::string& z);
+	Vector3D(const Vector2D& vector_2d);
 	~Vector3D();
 
 	// Accessors
@@ -20,6 +26,24 @@ public:
 	void setY(const T y);
 	void setZ(const T z);
 	void set(const T x, const T y, const T z);
+
+	// input/output operator overloads
+	friend std::ostream& operator<<(std::ostream& out, const Vector3D& rhs)
+	{
+		out << rhs.ToString();
+		return out;
+	}
+
+	friend std::istream& operator>>(std::istream& in, Vector3D& rhs)
+	{
+		in >> rhs.m_x;
+		in.ignore();
+		in >> rhs.m_y;
+		in.ignore();
+		in >> rhs.m_z;
+
+		return in;
+	}
 
 	std::string ToString() const;
 
@@ -34,6 +58,40 @@ private:
 template <class T>
 Vector3D<T>::Vector3D(const T x, const T y, const T z) : m_x(x), m_y(y), m_z(z)
 {
+}
+
+template <class T>
+Vector3D<T>::Vector3D(const std::string& x, const std::string& y, const std::string& z)
+{
+	if(typeid(T) == typeid(int))
+	{
+		m_x = std::stoi(x);
+		m_y = std::stoi(y);
+		m_z = std::stoi(z);
+	}
+
+	if (typeid(T) == typeid(float))
+	{
+		m_x = std::stof(x);
+		m_y = std::stof(y);
+		m_z = std::stof(z);
+	}
+
+	if (typeid(T) == typeid(double))
+	{
+		m_x = std::stod(x);
+		m_y = std::stod(y);
+		m_z = std::stod(z);
+	}
+
+}
+
+template <class T>
+Vector3D<T>::Vector3D(const Vector2D& vector_2d)
+{
+	m_x = static_cast<T>(vector_2d.GetX());
+	m_y = static_cast<T>(vector_2d.GetY());
+	m_z = static_cast<T>(0.0);
 }
 
 template <class T>
